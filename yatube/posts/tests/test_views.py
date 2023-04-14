@@ -1,5 +1,4 @@
 from django import forms
-from django.core.cache import cache
 from django.test import Client, TestCase
 from django.urls import reverse
 
@@ -35,9 +34,6 @@ class TaskPagesTests(TestCase):
             slug='new_slug',
             description='Новое описание',
         )
-
-    def setUp(self):
-        cache.clear()
 
     def test_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
@@ -187,9 +183,6 @@ class PaginatorViewsTest(TestCase):
             ))
 
         Post.objects.bulk_create(posts)
-
-    def setUp(self):
-        cache.clear()
 
     def test_paginator_on_three_pages(self):
         group_page = '/group/test-slug/'

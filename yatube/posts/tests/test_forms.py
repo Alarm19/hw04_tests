@@ -1,16 +1,9 @@
-import tempfile
-
-from django.conf import settings
-from django.core.cache import cache
-from django.test import Client, TestCase, override_settings
+from django.test import Client, TestCase
 from django.urls import reverse
 
 from ..models import Group, Post, User
 
-TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
-
-@override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class PostFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -30,9 +23,6 @@ class PostFormTests(TestCase):
             author=cls.user,
             group=cls.group,
         )
-
-    def setUp(self):
-        cache.clear()
 
     def test_post_create(self):
         """При создании нового поста создаётся новая запись в базе данных """

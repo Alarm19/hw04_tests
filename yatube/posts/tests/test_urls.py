@@ -1,6 +1,5 @@
 from http import HTTPStatus
 
-from django.core.cache import cache
 from django.test import Client, TestCase
 from django.urls import reverse
 
@@ -30,9 +29,6 @@ class PostURLTests(TestCase):
             slug='some-slug',
             description='Тестовое описание',
         )
-
-    def setUp(self) -> None:
-        cache.clear()
 
     def test_homepage(self):
         response = self.client.get('/')
