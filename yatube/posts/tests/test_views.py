@@ -1,14 +1,13 @@
 from django import forms
-from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.test import Client, TestCase
 from django.urls import reverse
-from posts.models import Group, Post
 
-User = get_user_model()
-number_of_posts = 13
-number_of_posts_on_first_page = 10
-number_of_posts_on_second_page = 3
+from ..models import Group, Post, User
+
+NUMBER_OF_POSTS = 13
+NUMBER_OF_POSTS_ON_FIRST_PAGE = 10
+NUMBER_OF_POSTS_ON_SECOND_PAGE = 3
 
 
 class TaskPagesTests(TestCase):
@@ -179,15 +178,15 @@ class PaginatorViewsTest(TestCase):
             group=cls.group,
         )
 
-        list_of_posts = []
-        for _ in range(1, 13):
-            list_of_posts.append(Post(
+        posts = []
+        for _ in range(1, NUMBER_OF_POSTS):
+            posts.append(Post(
                 text='Один из множества постов',
                 author=cls.user,
                 group=cls.group,
             ))
 
-        Post.objects.bulk_create(list_of_posts)
+        Post.objects.bulk_create(posts)
 
     def setUp(self):
         cache.clear()
@@ -199,12 +198,12 @@ class PaginatorViewsTest(TestCase):
         second_page = '?page=2'
 
         page_expected_posts = {
-            group_page: number_of_posts_on_first_page,
-            profile_page: number_of_posts_on_first_page,
-            main_page: number_of_posts_on_first_page,
-            group_page + second_page: number_of_posts_on_second_page,
-            profile_page + second_page: number_of_posts_on_second_page,
-            main_page + second_page: number_of_posts_on_second_page,
+            group_page: NUMBER_OF_POSTS_ON_FIRST_PAGE,
+            profile_page: NUMBER_OF_POSTS_ON_FIRST_PAGE,
+            main_page: NUMBER_OF_POSTS_ON_FIRST_PAGE,
+            group_page + second_page: NUMBER_OF_POSTS_ON_SECOND_PAGE,
+            profile_page + second_page: NUMBER_OF_POSTS_ON_SECOND_PAGE,
+            main_page + second_page: NUMBER_OF_POSTS_ON_SECOND_PAGE,
         }
 
         for address, expected_number_of_posts in page_expected_posts.items():

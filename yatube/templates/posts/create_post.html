@@ -12,10 +12,10 @@
           <div class="card-body"> 
               {% if is_edit %} 
                 <form method="post" action="{% url 'posts:post_edit' post %}"></form>
-                {% include 'includes/new_post.html' %}
+                {% include 'posts/includes/new_post.html' %}
               {% else %} 
                 <form method="post" action="{% url 'posts:post_create' %}">
-                {% include 'includes/new_post.html' %}
+                {% include 'posts/includes/new_post.html' %}
               {% endif %} 
                   {% csrf_token %} 
                   <div class="d-flex justify-content-end"> 

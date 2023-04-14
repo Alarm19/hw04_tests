@@ -1,15 +1,13 @@
 import tempfile
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
-from ..models import Group, Post
+from ..models import Group, Post, User
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
-User = get_user_model()
 
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
@@ -20,8 +18,6 @@ class PostFormTests(TestCase):
         cls.user = User.objects.create_user(username='StasBasov')
         cls.authorized_client = Client()
         cls.authorized_client.force_login(cls.user)
-
-        cls.guest_client = Client()
 
         cls.group = Group.objects.create(
             title='Тестовая группа',
@@ -70,3 +66,20 @@ class PostFormTests(TestCase):
             'posts:post_detail',
             kwargs={'post_id': self.post.id}))
         self.assertEqual(self.post.text, edited_text)
+
+    def test_anonym_cant_create_post(self):
+        """Анонимный пользователь не может создать пост"""
+
+        posts_count_before = Post.objects.count()
+
+        new_post_content = {
+            'text': 'Новый текст',
+            'group': self.group,
+        }
+
+        self.client.post(reverse(
+            'posts:post_create'),
+            data=new_post_content,)
+
+        posts_count_after = Post.objects.count()
+        self.assertEqual(posts_count_before, posts_count_after)
